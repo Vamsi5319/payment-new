@@ -1,0 +1,45 @@
+#%RAML 1.0 DataType
+
+ type: object
+ properties:
+              msg:
+                description: This element will contain error message.
+                type: string
+                required: true
+                example: "failed operation"
+              code:
+                description: This element will contain error code.
+                type: integer
+                required: true
+                example: 400
+              success:
+                description: This element will contain error message.
+                required: true
+                type: boolean
+                example: false
+              eventId:
+                description: This element will contain error event Id.
+                required: true
+                minLength: 36
+                maxLength: 36
+                example: "hdsfhjdh-jxbv859-sjdf7643-3746bbd458"
+              error:
+                description: This object will contain error object details.
+                required: true
+                type: object
+                properties:
+                  type:
+                    description: This element will contain error object type.
+                    type: string
+                    required: true
+                    example: "BAD_REQUEST"
+                  title:
+                    description: This element will contain error object title.
+                    type: string
+                    required: true
+                    example: "Invalid Request"
+                  details:
+                    description: This element will contain error object details.
+                    type: string
+                    required: true
+                    example: "The input contains invalid data"

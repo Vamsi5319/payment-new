@@ -1,0 +1,21 @@
+#%RAML 1.0 DataType
+
+ type: object
+ properties:
+      recrodPaymentTransactionResponce:
+                description: This object will contain record payment api response
+                type: object
+                required: true
+                properties:
+                  eventInstanceId:
+                    description: This header will contain transcation id.
+                    type: string
+                    required: true
+                    minLength: 36
+                    maxLength: 36
+                    example: "hdsfhjdh-jxbv859-sjdf7643-3746bbd458"
+                  status:
+                    description: This element will contaion status of payment
+                    type: string
+                    required: true
+                    example: "success"

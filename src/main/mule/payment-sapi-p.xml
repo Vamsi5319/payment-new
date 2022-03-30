@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+   
+    <flow name="payment-sapi-p-main">
+        <http:listener config-ref="payment-sapi-p-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="payment-sapi-p-config" />
+		<error-handler ref="global-error-handler" />
+    </flow>
+    <flow name="payment-sapi-p-console">
+        <http:listener config-ref="payment-sapi-p-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="payment-sapi-p-config" />
+		<error-handler ref="global-error-handler" />
+    </flow>
+    <flow name="get:\payments\refernceIds:payment-sapi-p-config">
+		<flow-ref doc:name="Flow Reference to call Initilize request subflow" doc:id="88319baa-1daa-4c2c-acca-7b7b895aac29" name="initila-information-flow" />
+		<logger level="INFO" doc:name="Request Logger" doc:id="d98768b1-4e62-4279-8edf-55eeaf3186f8" message='#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.header."x-rms-transactionId",&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "payment transcation", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "dataBase", 	&#10;    customerId: "NA", 	&#10;    txnState:  "START " &#10;}]'/>
+		<flow-ref doc:name="Flow Reference to call generate reference id sub flow" doc:id="7721b552-b03d-435d-8d95-06f3f91782ce" name="generate-payment-refreenceid-implementation-flowSub_Flow"/>
+		<logger level="INFO" doc:name="Response Logger" doc:id="75e6e289-7624-445a-a027-a79bd9446c44" message='#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.header."x-rms-transactionId",&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "payment transcation", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "dataBase", 	&#10;    customerId: "NA", 	&#10;    txnState:  "END",&#10;    executionTime: now() - vars.request.startTime&#10;}]'/>
+		<error-handler ref="application-errorError_Handler" />
+    </flow>
+    <flow name="post:\payments:application\json:payment-sapi-p-config">
+		<flow-ref doc:name="Flow Reference to call Initilize request subflow" doc:id="9ecce9bc-cf5e-4d45-a471-31414ebd5b18" name="initila-information-flow" />
+		<logger level="INFO" doc:name="Request Logger" doc:id="bc304d7f-dcf9-44a1-b2ef-f5dd5924522c" message='#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.header."x-rms-transactionId",&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "payment transcation", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "dataBase", 	&#10;    customerId: "NA", 	&#10;    txnState:  "START " &#10;}]'/>
+		<flow-ref doc:name="Flow refreence to call record implementation sub flow" doc:id="ef0b91c8-dbd4-4b6c-a9f6-1ccd6488aebe" name="record-payment-implementationSub_Flow"/>
+		<logger level="INFO" doc:name="Response Logger" doc:id="d56dccba-7ceb-46e1-b1df-5961313c22c4" message='#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.header."x-rms-transactionId",&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "payment transcation", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "dataBase", 	&#10;    customerId: "NA", 	&#10;    txnState:  "END",&#10;    executionTime: now() - vars.request.startTime&#10;}]'/>
+		<error-handler ref="application-errorError_Handler" />
+    </flow>
+    <flow name="get:\payments\(currentCurrencyCode)\(baseCurrencyCode):payment-sapi-p-config">
+		<flow-ref doc:name="Flow Reference to call Initilize request subflow" doc:id="f3f63b8a-fc4a-4c71-acb7-7f9f88c49582" name="initila-information-flow" />
+		<logger level="INFO" doc:name="Request Logger" doc:id="ed0b318f-3661-4a32-8253-aeebbf7030b0" message='#[%dw 2.0 &#10;&#10;output application/json indent = false &#10;&#10;--- &#10;&#10;{ 	&#10;	timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.header."x-rms-transactionId",&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "Exchange Rate", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "Exchange Rate 3rd party API", 	&#10;    customerId: "NA", 	&#10;    txnState:  "START " &#10;}]'/>
+		<flow-ref doc:name="Flow Reference to call exchange rate sub flow" doc:id="1ba25633-f019-4c6e-bcfc-277403dd4391" name="exchange-rate-payment-implementationSub_Flow"/>
+		<logger level="INFO" doc:name="Response Logger" doc:id="9bf4c77e-0b10-4432-b0f7-4db339d44643" message='#[%dw 2.0 &#10;&#10;output application/json indent = false &#10;&#10;--- &#10;&#10;{ 	&#10;	timeStamp: vars.request.startTime,&#10;	transactionId: vars.request.header."x-rms-transactionId",&#10;	appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  "Exchange Rate", 	&#10;    category:  "payment", 	&#10;    originatingApplication:  "Process API", 	&#10;    desinationApplication:  "Exchange Rate 3rd party API", 	&#10;    customerId: "NA", 	&#10;    txnState:  "END",&#10;    executionTime: now() - vars.request.startTime&#10;    }]'/>
+		<error-handler ref="application-errorError_Handler" />
+    </flow>
+</mule>

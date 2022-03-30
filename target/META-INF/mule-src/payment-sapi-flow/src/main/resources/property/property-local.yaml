@@ -1,0 +1,12 @@
+http:
+   host: "0.0.0.0"
+   port: "8081" 
+   
+mysql:
+   host: "bhrpeehv7lpghzlrdqvz-mysql.services.clever-cloud.com"
+   port: "3306"
+   databaseName: "bhrpeehv7lpghzlrdqvz"
+   
+exchangeRate:
+   host: "api.exchangeratesapi.io"
+   basePath: "/v1/latest"

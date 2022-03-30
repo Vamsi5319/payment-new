@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+            <error-handler name="global-error-handler">
+            <on-error-continue type="APIKIT:BAD_REQUEST">
+               <logger level="INFO" doc:name="Logger" doc:id="19cf07cd-aa09-4155-adfb-e04112247d70" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="1c46baa2-c768-4221-ad1f-c98b9eeccbd4" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 400,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[400]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+            <on-error-continue type="APIKIT:NOT_FOUND">
+                <logger level="INFO" doc:name="Logger" doc:id="e72d85c7-817a-4467-b220-3572455d4ddd" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="27ff0342-a534-43d9-8f5d-5fc76a34171c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 404,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+            <on-error-continue type="APIKIT:METHOD_NOT_ALLOWED">
+               <logger level="INFO" doc:name="Logger" doc:id="533475ab-252f-41ec-b486-3dc467b84a2d" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="83797813-f49a-4276-b868-11b91848c542" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 405,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[405]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+            <on-error-continue type="APIKIT:NOT_ACCEPTABLE">
+                <logger level="INFO" doc:name="Logger" doc:id="0bb8e36b-0709-4239-885c-04e04e9e7236" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="f683c690-9409-43d4-9577-701323156574" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 406,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[406]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+            <on-error-continue type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <logger level="INFO" doc:name="Logger" doc:id="80164262-8453-4fcd-ab3c-11d331ae4839" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="a2fac704-a76f-4c4d-878b-28f83ab52d54" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 415,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[415]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+            <on-error-continue type="APIKIT:NOT_IMPLEMENTED">
+                <logger level="INFO" doc:name="Logger" doc:id="1c0d9342-fc01-4fd8-ada0-82b924fc9b58" message="#[%dw 2.0 
+&#10;output application/json indent = false 
+&#10;--- 
+&#10;{ 	
+&#10;    timeStamp: vars.request.startTime,
+&#10;    transactionId: vars.request.headers.'x-rms-transactionId',
+&#10;    appName: app.name, 	
+&#10;    flowName: flow.name, 	
+&#10;    businessProcessName:  &quot;payment transcation&quot;, 	
+&#10;    category:  &quot;payment&quot;, 	
+&#10;    originatingApplication:  &quot;Process API&quot;, 	
+&#10;    desinationApplication:  &quot;dataBase&quot;, 	
+&#10;    customerId: &quot;NA&quot;, 	
+&#10;    txnState:  &quot;ERROR&quot;,
+&#10;    errorMsg: error 
+&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="7e3827d1-0573-4af5-bbca-54e6762b9abe" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 501,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[501]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+            </on-error-continue>
+              </error-handler>
+	<error-handler name="application-errorError_Handler" doc:id="58015f84-a0b7-468e-bfc4-207dd0134397" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="4dac129e-8f04-4b7a-bccf-5dd270168a7a" type="DB:CONNECTIVITY,DB:BAD_SQL_SYNTAX,DB:CANNOT_REACH,DB:INVALID_DATABASE,DB:INVALID_CREDENTIALS,DB:QUERY_EXECUTION,DB:RETRY_EXHAUSTED">
+			<logger level="INFO" doc:name="Logger" doc:id="a8e0ce70-a607-4c4f-92a4-d0960e98057a" message="#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transaction&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;dataBase&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;ERROR&quot;,&#10;    errorMsg: error &#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="8eca34b6-4f0e-47d9-9dc6-87aac5f04e9b" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 500,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7233d566-be46-4697-8993-1b0f9e92dd1f" type="HTTP:BAD_REQUEST,HTTP:CONNECTIVITY,HTTP:NOT_FOUND,HTTP:TIMEOUT,HTTP:UNAUTHORIZED,HTTP:BAD_GATEWAY,HTTP:GATEWAY_TIMEOUT">
+			<logger level="INFO" doc:name="Logger" doc:id="dac2762b-3670-4e42-a109-f92ddc91bcbe" message="#[%dw 2.0 &#10;&#10;output application/json indent = false &#10;&#10;--- &#10;&#10;{ 	&#10;    timeStamp: vars.request.startTime,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transaction&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;Exchange Rate 3rd party API&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;ERROR&quot;,&#10;    errorMsg: error &#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="c40e1206-fd7c-4d1b-9bfc-8035c15f0b72" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "Exchange Rate 3rd Party APi",
+  "code": 500,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatusCode" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="834c2346-f538-4f73-9ff4-a1ff164e57bb" >	
+		<logger level="INFO" doc:name="Logger" doc:id="1ea1c7ff-4e65-430c-b3c1-77ad7817bfc6" message="#[%dw 2.0 &#10;&#10;output application/json indent = false &#10;&#10;--- &#10;&#10;{ 	&#10;&#10;    timeStamp: vars.request.startTime,&#10;&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;&#10;    appName: app.name, 	&#10;&#10;    flowName: flow.name, 	&#10;&#10;    businessProcessName:  &quot;payment transcation&quot;, 	&#10;&#10;    category:  &quot;payment&quot;, 	&#10;&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;&#10;    desinationApplication:  &quot;dataBase&quot;, 	&#10;&#10;    customerId: &quot;NA&quot;, 	&#10;&#10;    txnState:  &quot;ERROR&quot;,&#10;&#10;    errorMsg: error &#10;&#10;}]"/>
+			<ee:transform doc:name="Transform Message" doc:id="28822818-0885-4670-bfce-0efd28d9d67c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "msg": "failed operation",
+  "code": 500,
+  "success": false,
+  "eventId": vars.request.header."x-rms-transactionid",
+  "error": {
+    "type": error.errorType,
+    "title": error.description,
+    "details": error.detailedDescription
+  }
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-continue>
+	</error-handler>
+	
+</mule>

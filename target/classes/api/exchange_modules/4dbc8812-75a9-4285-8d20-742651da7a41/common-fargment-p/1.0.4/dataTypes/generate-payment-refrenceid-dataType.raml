@@ -1,0 +1,19 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  paymentReferenceIdResponse:
+    description: This object will contain record payment details
+    type: object
+    required: true
+    properties:
+      eventInstanceId:
+        description: This header will contain transcation id.
+        type: string
+        required: true
+        example: "hdsfhjdh-jxbv859-sjdf7643-3746bbd458"
+      paymentReferenceId:
+        description: This element will contaion payment Refreence id
+        type: string
+        required: true
+        example: "PAYMENT23645263474736"

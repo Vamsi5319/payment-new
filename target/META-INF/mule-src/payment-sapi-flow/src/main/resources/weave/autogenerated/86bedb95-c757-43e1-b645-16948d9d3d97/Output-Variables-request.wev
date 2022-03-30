@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_86bedb95_c757_43e1_b645_16948d9d3d97_Output_Variables_request = {|
+  header: {|
+    "x-rms-transactionId": String, 
+    clientId: String, 
+    clientSecret: String
+  |} | Null, 
+  queryParams: {|  |} | Null, 
+  uriParams: {|  |} | Null, 
+  payload: {
+    recordPaymentTransactionRequest: {
+      amount: Number, 
+      currentCurrencyCode: String, 
+      paymentMode: String, 
+      paymentReferenceId: String, 
+      _?: Any
+    } {"description": "This object will contain payment details."}, 
+    _?: Any
+  }, 
+  startTime: DateTime
+|}
+

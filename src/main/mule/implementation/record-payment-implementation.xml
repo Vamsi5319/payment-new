@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="record-payment-implementationSub_Flow" doc:id="86bedb95-c757-43e1-b645-16948d9d3d97" >
+		<ee:transform doc:name="Storing the flow started Time" doc:id="145f08ea-039d-4cff-b527-4f324bd63704" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="startTimeDB" ><![CDATA[%dw 2.0
+output application/json
+---
+now()]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Request DB Logger" doc:id="56e7cd22-10c7-4e48-882f-00d06ec50a08" message="#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.startTimeDB,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transcation&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;dataBase&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Request payment DB&quot; &#10;}]"/>
+		<db:insert doc:name="Insert into payment record DB" doc:id="f31d2385-9688-4153-b564-3f9abca30e2e" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO payment (paymentReferenceId, amount, currentCurrencyCode, baseCurrencyCode, paymentMode, transcationDateTime, status)
+ VALUES (:paymentReferenceId, :amount, :currentCurrencyCode, :baseCurrencyCode, :paymentMode, :transcationDateTime, :status);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	paymentReferenceId: vars.request.payload.recordPaymentTransactionRequest.paymentReferenceId as String default "",
+	amount: vars.request.payload.recordPaymentTransactionRequest.amount as Number,
+	currentCurrencyCode: vars.request.payload.recordPaymentTransactionRequest.currentCurrencyCode,
+	baseCurrencyCode: vars.request.payload.recordPaymentTransactionRequest.baseCurrencyCode,
+	paymentMode: vars.request.payload.recordPaymentTransactionRequest.paymentMode,
+	transcationDateTime: vars.request.payload.recordPaymentTransactionRequest.transcationDateTime,
+	status: vars.request.payload.recordPaymentTransactionRequest.status
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Response DB Logger" doc:id="265091a1-ea1a-43e4-b3ef-7ef0aee896cd" message="#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.startTimeDB,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transcation&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;dataBase&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Response payment DB&quot;,&#10;    executionTime: now() - vars.startTimeDB&#10;}]"/>
+		<ee:transform doc:name="Final output messgae" doc:id="0bdbe108-876d-47e7-8db4-8c8703847b4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[{
+  "recrodPaymentTransactionResponce": {
+    "eventInstanceId": vars.request.headers."x-rms-transactionid",
+    "status": "success"
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

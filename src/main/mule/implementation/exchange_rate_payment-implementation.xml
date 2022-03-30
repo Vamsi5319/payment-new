@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<sub-flow name="exchange-rate-payment-implementationSub_Flow" doc:id="86bedb95-c757-43e1-b645-16948d9d3d97" >
+		<ee:transform doc:name="Storing the flow started Time" doc:id="145f08ea-039d-4cff-b527-4f324bd63704" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="startTimeExchangeRate" ><![CDATA[%dw 2.0
+output application/json
+---
+now()]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Request to 3rd party exchange Rate Logger" doc:id="56e7cd22-10c7-4e48-882f-00d06ec50a08" message="#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.startTimeExchangeRate,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transaction&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;Exchange rate 3rd party API&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Exchange rate payment&quot; &#10;}]"/>
+		<http:request method="GET" doc:name="Request call to 3rd party exchnage Rate API" doc:id="11188a4a-0e63-485a-8193-11bf27df2d51" config-ref="HTTP_Request_configuration_ExchangeRate" path="${exchangeRate.basePath}">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"symbols" : vars.request.uriParams.currentCurrencyCode,
+	"access_key" : p('secure::exchangeRate.accesskey'),
+	"base" : vars.request.uriParams.baseCurrencyCode
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Response of 3rd party exchange Rate Logger" doc:id="265091a1-ea1a-43e4-b3ef-7ef0aee896cd" message="#[%dw 2.0 &#10;output application/json indent = false &#10;--- &#10;{ 	&#10;    timeStamp: vars.startTimeExchangeRate,&#10;    transactionId: vars.request.headers.'x-rms-transactionId',&#10;    appName: app.name, 	&#10;    flowName: flow.name, 	&#10;    businessProcessName:  &quot;payment transaction&quot;, 	&#10;    category:  &quot;payment&quot;, 	&#10;    originatingApplication:  &quot;Process API&quot;, 	&#10;    desinationApplication:  &quot;Exchange Rate 3rd party&quot;, 	&#10;    customerId: &quot;NA&quot;, 	&#10;    txnState:  &quot;Response Exchange Rate&quot;,&#10;    executionTime: now() - vars.startTimeExchangeRate&#10;}]"/>
+		<ee:transform doc:name="Final output messgae" doc:id="0bdbe108-876d-47e7-8db4-8c8703847b4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[{
+  "exchangeRateResponce": {
+    "eventInstanceId": vars.request.headers."x-rms-transactionid",
+    "exchangeRate": (payload.rates..)[0]
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

@@ -1,0 +1,20 @@
+#%RAML 1.0 Trait
+
+headers:
+ x-rms-transactionId:
+        description: This header will contain transcation id.
+        type: string
+        required: true
+        minLength: 36
+        maxLength: 36
+        example: "hdsfhjdh-jxbv859-sjdf7643-3746bbd458"
+ clientId:
+        description: This haeder will contains client id value.
+        type: string
+        required: true
+        example: "hsdfgysdhfcdshf37er6twgsdhfjcd"
+ clientSecret:
+        description: This header will contain client secret.
+        type: string
+        required: true
+        example: "dsgfhaegur457r6ewsewegrfjesh"

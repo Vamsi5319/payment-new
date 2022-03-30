@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_663b04e6_6586_4cf3_ad7e_7777e03a8025_Input_Payload = {
+  recordPaymentTransactionRequest: {
+    amount: Number, 
+    currentCurrencyCode: String, 
+    paymentMode: String, 
+    paymentReferenceId: String, 
+    _?: Any
+  } {"description": "This object will contain payment details."}, 
+  _?: Any
+}
+

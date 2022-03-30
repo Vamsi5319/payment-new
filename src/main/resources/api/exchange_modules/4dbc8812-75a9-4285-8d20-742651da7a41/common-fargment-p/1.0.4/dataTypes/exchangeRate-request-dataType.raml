@@ -1,0 +1,20 @@
+#%RAML 1.0 DataType
+
+ type: object
+ properties:
+          exchangeRateRequest :
+            description: This object will contain payment details.
+            required: true
+            type: object
+            properties:
+              currentCurrencyCode:
+                description: This element will contain current currency code.
+                type: string
+                required: true
+                example: "USD"
+              baseCurrencyCode:
+                description: This element will contain base currency Code.
+                type: string
+                required: true
+                example: "USD"
+              
