@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<http:listener-config name="payment-sapi-p-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+    <http:request-config name="HTTP_Request_configuration_ExchangeRate" doc:name="HTTP Request configuration" doc:id="a0109dc5-0e70-47b0-9670-2d44c57e4c52" >
+		<http:request-connection host="${exchangeRate.host}" />
+	</http:request-config>
+    <apikit:config name="payment-sapi-p-config" api="payment-sapi-p.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="03b36187-c184-4b75-9d2d-78f36452364c" >
+		<db:my-sql-connection host="${mysql.host}" port="${mysql.port}" user="${secure::mysql.username}" password="${secure::mysql.password}" database="${mysql.databaseName}" />
+	</db:config>
+	<global-property doc:name="Global Property" doc:id="4fc505de-eace-4e16-8b42-13c10dd15182" name="env" value="local" />
+	<global-property doc:name="Global Property" doc:id="9c8122f6-745b-414b-bce3-181a0101cfdd" name="encryptionKey" value="mulesoft123" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="070e992f-9b9c-4e64-b18e-55cec6ddc320" file="property.secure/property-${env}.yaml" key="${encryptionKey}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="45c25117-9162-4282-a8e2-5226396ae26f" file="property\property-${env}.yaml" />
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="6f71aa76-d75d-4ca4-bfc3-6ff4124504dd" flowRef="payment-sapi-p-main" />
+	
+</mule>

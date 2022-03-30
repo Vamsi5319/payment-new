@@ -1,0 +1,11 @@
+{
+  "recordPaymentTransactionRequest": {
+    "paymentReferenceId": "txn1000001",
+    "amount": 240000,
+    "currentCurrencyCode": "USD",
+    "baseCurrencyCode" : "USD",
+    "paymentMode": "Netbanking",
+    "transcationDateTime" : "12-12-2021T12:12:12",
+    "status" : "S"
+  }
+}

@@ -1,0 +1,11 @@
+%dw 2.0
+
+type auto_86bedb95_c757_43e1_b645_16948d9d3d97_Output_Payload = {
+  recrodPaymentTransactionResponce: {
+    eventInstanceId: String, 
+    status: String, 
+    _?: Any
+  } {"description": "This object will contain record payment api response"}, 
+  _?: Any
+}
+

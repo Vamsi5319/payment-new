@@ -1,0 +1,131 @@
+#%RAML 1.0
+title: payment-sapi-raml
+description: This Raml contains payment sapi api's details
+protocols:
+  - HTTP
+  - HTTPS
+
+version: 1.0.4
+
+types:
+  record-payment-request : !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/dataTypes/record-payment-request-dataType.raml
+  record-payment-response : !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/dataTypes/record-payment-response-dataType.raml
+  common-error : !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/dataTypes/common-error-dataType.raml
+  generate-payment-refrence-response: !include /examples/generate-payment-refrenceid-example.json
+  exchangeRate-response: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/dataTypes/exchangeRate-response-dataType.raml
+
+
+traits:
+  common : !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/traits/header-common-trait.raml
+  authorization : !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/traits/header-authorization-trait.raml
+
+/payments:
+  post:
+    description: This API will record payment transcation details in transcation DB.
+
+    is:
+      - common
+    body:
+      application/json:
+        type: record-payment-request
+        example: !include /examples/record-payment-request-example.json
+    responses:
+      201:
+        body:
+          application/json:
+            type: record-payment-response 
+            example: !include /examples/record-payment-response-example.json
+              
+      400:
+        body:
+          application/json:
+            type: common-error
+            example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-400-example.json
+                 
+      401:
+        body:
+          application/json:
+            type: common-error
+            example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-401-example.json
+                
+      404:
+        body:
+          application/json:
+            type: common-error
+            example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-404-example.json
+                 
+      500:
+        body:
+          application/json:
+            type: common-error
+            example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-500-example.json
+  /refernceIds:
+    get:
+      is:
+        - common
+      responses:
+        200:
+          body:
+            application/json:
+              type: generate-payment-refrence-response
+              example: !include /examples/generate-payment-refrenceid-example.json
+                
+        400:
+          body:
+            application/json:
+              type: common-error
+              example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-400-example.json
+                 
+        401:
+          body:
+            application/json:
+              type: common-error
+              example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-401-example.json
+                
+        404:
+          body:
+            application/json:
+              type: common-error
+              example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-404-example.json
+                 
+        500:
+          body:
+            application/json:
+              type: common-error
+              example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-500-example.json
+  /{currentCurrencyCode}:
+    /{baseCurrencyCode}:
+      get:
+        is:
+          - common
+        responses:
+          200:
+            body:
+              application/json:
+                type: exchangeRate-response
+                example: !include /examples/exchangeRate-response-example.json
+          400:
+            body:
+              application/json:
+                type: common-error
+                example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-400-example.json
+                 
+          401:
+            body:
+              application/json:
+                type: common-error
+                example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-401-example.json
+                
+          404:
+            body:
+              application/json:
+                type: common-error
+                example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-404-example.json
+                 
+          500:
+            body:
+              application/json:
+                type: common-error
+                example: !include /exchange_modules/4dbc8812-75a9-4285-8d20-742651da7a41/common-fargment-p/1.0.4/examples/common-error-500-example.json
+
+                                   

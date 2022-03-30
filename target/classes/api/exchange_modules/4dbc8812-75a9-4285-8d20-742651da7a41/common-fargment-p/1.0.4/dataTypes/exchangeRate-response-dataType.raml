@@ -1,0 +1,19 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  exchangeRateResponce:
+    description: This object will contain record payment details
+    type: object
+    required: true
+    properties:
+      eventInstanceId:
+        description: This header will contain event instance id.
+        type: string
+        required: true
+        example: "dsfhdbfhsbdfhjsb3784t2wfsd"
+      exchangeRate:
+        description: This element will contaion exchange Rate details
+        type: number
+        required: true
+        example: 74.12
